@@ -146,3 +146,21 @@ def convert(
             json.dump(coco_output, f)
 
     return coco_output
+
+
+if __name__ == "__main__":
+    input_dir = "/content/data/balloon/train/"
+    input_json = input_dir + "via_region_data.json"
+    categories = ["balloon"]
+
+    super_categories = ["N/A"]
+
+    output_json = input_dir + "coco_train.json"
+
+    coco_dict = convert(
+        imgdir=input_dir,
+        annpath=input_json,
+        categories=categories,
+        super_categories=super_categories,
+        output_file_name=output_json,
+    )
