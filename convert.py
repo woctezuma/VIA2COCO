@@ -14,7 +14,6 @@ def create_image_info(
     coco_url="",
     flickr_url="",
 ):
-
     image_info = {
         "id": image_id,
         "file_name": file_name,
@@ -32,7 +31,6 @@ def create_image_info(
 def create_annotation_info(
     annotation_id, image_id, category_id, is_crowd, area, bounding_box, segmentation
 ):
-
     annotation_info = {
         "id": annotation_id,
         "image_id": image_id,
@@ -54,13 +52,27 @@ def get_segmenation(coord_x, coord_y):
     return [seg]
 
 
-def convert(imgdir, annpath):
+def convert(
+    imgdir, annpath, categories=None, super_categories=None,
+):
     """
     :param imgdir: directory for your images
     :param annpath: path for your annotations
     :return: coco_output is a dictionary of coco style which you could dump it into a json file
     as for keywords 'info','licenses','categories',you should modify them manually
     """
+
+    if categories is None:
+        categories = ["rib", "clavicle"]
+
+    category_dict = dict()
+    for (cat_id, cat_name) in enumerate(categories, start=1):
+        category_dict[cat_name] = cat_id
+
+    if super_categories is None:
+        default_super_category = "bone"
+        super_categories = [default_super_category for _ in categories]
+
     coco_output = {}
     coco_output["info"] = {
         "description": "Example Dataset",
@@ -78,8 +90,12 @@ def convert(imgdir, annpath):
         }
     ]
     coco_output["categories"] = [
-        {"id": 1, "name": "rib", "supercategory": "bone",},
-        {"id": 2, "name": "clavicle", "supercategory": "bone",},
+        {
+            "id": category_dict[cat_name],
+            "name": cat_name,
+            "supercategory": super_cat_name,
+        }
+        for (cat_name, super_cat_name) in zip(categories, super_categories)
     ]
     coco_output["images"] = []
     coco_output["annotations"] = []
@@ -100,12 +116,12 @@ def convert(imgdir, annpath):
         regions = ann[key]["regions"]
         # for one image ,there are many regions,they share the same img id
         for region in regions:
-            cat = region["region_attributes"]["label"]
-            assert cat in ["rib", "clavicle"]
-            if cat == "rib":
-                cat_id = 1
-            else:
-                cat_id = 2
+            cat_name = region["region_attributes"]["label"]
+            try:
+                cat_id = category_dict[cat_name]
+            except KeyError:
+                print("Skipping unknown category {} in {}".format(cat_name, filename))
+                continue
             iscrowd = 0
             points_x = region["shape_attributes"]["all_points_x"]
             points_y = region["shape_attributes"]["all_points_y"]
