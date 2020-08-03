@@ -1,5 +1,5 @@
 import os
-import cv2
+from PIL import Image
 import datetime
 import json
 import getArea
@@ -107,10 +107,10 @@ def convert(
     for img_id, key in enumerate(ann.keys()):
 
         filename = ann[key]["filename"]
-        img = cv2.imread(imgdir + filename)
+        img = Image.open(imgdir + filename)
         # make image info and storage it in coco_output['images']
         image_info = create_image_info(
-            img_id, os.path.basename(filename), img.shape[:2]
+            img_id, os.path.basename(filename), img.size[::-1]
         )
         coco_output["images"].append(image_info)
         regions = ann[key]["regions"]
