@@ -65,6 +65,8 @@ def convert(
     if categories is None:
         categories = ["rib", "clavicle"]
 
+    default_category = categories[0]
+
     category_dict = dict()
     for (cat_id, cat_name) in enumerate(categories, start=1):
         category_dict[cat_name] = cat_id
@@ -117,7 +119,10 @@ def convert(
         # for one image ,there are many regions,they share the same img id
         for region in regions:
             region_attributes = regions[region]["region_attributes"]
-            cat_name = region_attributes["label"]
+            try:
+                cat_name = region_attributes["label"]
+            except KeyError:
+                cat_name = default_category
             try:
                 cat_id = category_dict[cat_name]
             except KeyError:
