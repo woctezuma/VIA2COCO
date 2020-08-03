@@ -53,7 +53,7 @@ def get_segmenation(coord_x, coord_y):
 
 
 def convert(
-    imgdir, annpath, categories=None, super_categories=None,
+    imgdir, annpath, categories=None, super_categories=None, output_file_name=None,
 ):
     """
     :param imgdir: directory for your images
@@ -138,5 +138,11 @@ def convert(
             )
             coco_output["annotations"].append(ann_info)
             ann_id = ann_id + 1
+
+    if output_file_name is not None:
+        print("Saving to {}".format(output_file_name))
+
+        with open(output_file_name, "w") as f:
+            json.dump(coco_output, f)
 
     return coco_output
