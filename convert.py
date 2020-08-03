@@ -116,15 +116,15 @@ def convert(
         regions = ann[key]["regions"]
         # for one image ,there are many regions,they share the same img id
         for region in regions:
-            cat_name = region["region_attributes"]["label"]
+            cat_name = regions[region]["region_attributes"]["label"]
             try:
                 cat_id = category_dict[cat_name]
             except KeyError:
                 print("Skipping unknown category {} in {}".format(cat_name, filename))
                 continue
             iscrowd = 0
-            points_x = region["shape_attributes"]["all_points_x"]
-            points_y = region["shape_attributes"]["all_points_y"]
+            points_x = regions[region]["shape_attributes"]["all_points_x"]
+            points_y = regions[region]["shape_attributes"]["all_points_y"]
             area = getArea.GetAreaOfPolyGon(points_x, points_y)
             min_x = min(points_x)
             max_x = max(points_x)
