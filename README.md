@@ -1,6 +1,6 @@
 # VIA2COCO
 
-This repository contains Python code to convert annotations from VIA to COCO format.
+This repository contains Python code to convert annotations from Oxford's VGG Image Annotator (VIA) to Microsoft's Common Objects in Context (COCO) format.
 
 ## Installation
 
@@ -76,5 +76,7 @@ and you should modify the category by yourself
 
 ## References
 
--   [pycococreator](https://github.com/waspinator/pycococreator/)
 -   [VIA2COCO: the original repository](https://github.com/codingwolfman/VIA2COCO)
+-   [VGG Image Annotator (VIA)](http://www.robots.ox.ac.uk/~vgg/software/via/), by Oxford's Visual Geometry Group
+-   [Common Objects in Context (COCO)](https://cocodataset.org/), by Microsoft
+-   An example of the VIA format, [as shown in a Github issue](https://github.com/matterport/Mask_RCNN/issues/1973#issuecomment-577886927)
