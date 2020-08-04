@@ -112,8 +112,12 @@ def convert(
         img = Image.open(imgdir + filename)
         # make image info and storage it in coco_output['images']
         image_info = create_image_info(
-            img_id, os.path.basename(filename), img.size[::-1]
+            img_id, os.path.basename(filename), image_size=img.size
         )
+        # Caveat: image shapes are conventionally (height, width) whereas image sizes are conventionally (width, height)
+        # References:
+        # -   https://note.nkmk.me/en/python-opencv-pillow-image-size/
+        # -   https://github.com/facebookresearch/detectron2/blob/master/detectron2/data/detection_utils.py#L189
         coco_output["images"].append(image_info)
         regions = ann[key]["regions"]
         # for one image ,there are many regions,they share the same img id
