@@ -28,6 +28,25 @@ coco_dict = via2coco.convert(
 )
 ```
 
+By default, the first category is indexed as 1.
+This can be changed to 0 (or any non-negative integer) as follows:
+
+```python
+import convert as via2coco
+
+input_dir = '/content/data/balloon/train/'
+input_json = input_dir + 'via_region_data.json'
+categories = ['balloon']
+first_class_index = 0
+
+coco_dict = via2coco.convert(
+    imgdir=input_dir,
+    annpath=input_json,
+    categories=categories,
+    first_class_index=first_class_index,
+)
+```
+
 To save the output as a JSON file:
 
 ```python
