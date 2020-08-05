@@ -71,9 +71,6 @@ coco_dict = via2coco.convert(
 )
 ```
 
-to use it , you should install cv2,json first
-and you should modify the category by yourself
-
 ## References
 
 -   [VIA2COCO: the original repository](https://github.com/codingwolfman/VIA2COCO)
