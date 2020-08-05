@@ -53,7 +53,12 @@ def get_segmenation(coord_x, coord_y):
 
 
 def convert(
-    imgdir, annpath, categories=None, super_categories=None, output_file_name=None,
+    imgdir,
+    annpath,
+    categories=None,
+    super_categories=None,
+    output_file_name=None,
+    first_class_index=1,  # typically, 0 or 1
 ):
     """
     :param imgdir: directory for your images
@@ -68,7 +73,7 @@ def convert(
     default_category = categories[0]
 
     category_dict = dict()
-    for (cat_id, cat_name) in enumerate(categories, start=1):
+    for (cat_id, cat_name) in enumerate(categories, start=first_class_index):
         category_dict[cat_name] = cat_id
 
     if super_categories is None:
