@@ -11,25 +11,27 @@ class Point():
 
 
 def GetAreaOfPolyGon(points_x, points_y):
-    points = []
-    for index in range(len(points_x)):
-        points.append(Point(points_x[index], points_y[index]))
+    points = [
+        Point(points_x[index], points_y[index])
+        for index in range(len(points_x))
+    ]
+
     area = 0
     if(len(points)<3):
-        
+
          raise Exception("error")
 
     p1 = points[0]
-    for i in range(1,len(points)-1):
+    for _ in range(1,len(points)-1):
         p2 = points[1]
         p3 = points[2]
 
-    
+
         vecp1p2 = Point(p2.x-p1.x,p2.y-p1.y)
         vecp2p3 = Point(p3.x-p2.x,p3.y-p2.y)
 
 
-        
+
         vecMult = vecp1p2.x*vecp2p3.y - vecp1p2.y*vecp2p3.x   
         sign = 0
         if(vecMult>0):
