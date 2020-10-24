@@ -10,7 +10,7 @@ def create_image_info(image_id, file_name, image_size,
                       date_captured=datetime.datetime.utcnow().isoformat(' '),
                       license_id=1, coco_url="", flickr_url=""):
 
-    image_info = {
+    return {
             "id": image_id,
             "file_name": file_name,
             "width": image_size[0],
@@ -21,12 +21,10 @@ def create_image_info(image_id, file_name, image_size,
             "flickr_url": flickr_url
     }
 
-    return image_info
-
 def create_annotation_info(annotation_id, image_id, category_id, is_crowd,
                            area, bounding_box, segmentation):
 
-    annotation_info = {
+    return {
         "id": annotation_id,
         "image_id": image_id,
         "category_id": category_id,
@@ -35,8 +33,6 @@ def create_annotation_info(annotation_id, image_id, category_id, is_crowd,
         "bbox": bounding_box,# [x,y,width,height]
         "segmentation": segmentation# [polygon]
     }
-
-    return annotation_info
 
 
 def get_segmenation(coord_x, coord_y):
@@ -54,39 +50,42 @@ def convert(imgdir, annpath):
     :return: coco_output is a dictionary of coco style which you could dump it into a json file
     as for keywords 'info','licenses','categories',you should modify them manually
     '''
-    coco_output = {}
-    coco_output['info'] = {
-        "description": "Example Dataset",
-        "url": "https://github.com/waspinator/pycococreator",
-        "version": "0.1.0",
-        "year": 2018,
-        "contributor": "waspinator",
-        "date_created": datetime.datetime.utcnow().isoformat(' ')
+    coco_output = {
+        'info': {
+            "description": "Example Dataset",
+            "url": "https://github.com/waspinator/pycococreator",
+            "version": "0.1.0",
+            "year": 2018,
+            "contributor": "waspinator",
+            "date_created": datetime.datetime.utcnow().isoformat(' '),
+        },
+        'licenses': [
+            {
+                "id": 1,
+                "name": "Attribution-NonCommercial-ShareAlike License",
+                "url": "http://creativecommons.org/licenses/by-nc-sa/2.0/",
+            }
+        ],
+        'categories': [
+            {
+                'id': 1,
+                'name': 'rib',
+                'supercategory': 'bone',
+            },
+            {
+                'id': 2,
+                'name': 'clavicle',
+                'supercategory': 'bone',
+            },
+        ],
+        'images': [],
+        'annotations': [],
     }
-    coco_output['licenses'] = [
-        {
-            "id": 1,
-            "name": "Attribution-NonCommercial-ShareAlike License",
-            "url": "http://creativecommons.org/licenses/by-nc-sa/2.0/"
-        }
-    ]
-    coco_output['categories'] = [{
-        'id': 1,
-        'name': 'rib',
-        'supercategory': 'bone',
-    },
-        {
-            'id': 2,
-            'name': 'clavicle',
-            'supercategory': 'bone',
-        }
-    ]
-    coco_output['images'] = []
-    coco_output['annotations'] = []
 
     ann = json.load(open(annpath))
     # annotations id start from zero
     ann_id = 0
+    iscrowd = 0
     #in VIA annotations, keys are image name
     for img_id, key in enumerate(ann.keys()):
 
@@ -100,11 +99,7 @@ def convert(imgdir, annpath):
         for region in regions:
             cat = region['region_attributes']['label']
             assert cat in ['rib', 'clavicle']
-            if cat == 'rib':
-                cat_id = 1
-            else:
-                cat_id = 2
-            iscrowd = 0
+            cat_id = 1 if cat == 'rib' else 2
             points_x = region['shape_attributes']['all_points_x']
             points_y = region['shape_attributes']['all_points_y']
             area = getArea.GetAreaOfPolyGon(points_x, points_y)
@@ -117,8 +112,8 @@ def convert(imgdir, annpath):
             # make annotations info and storage it in coco_output['annotations']
             ann_info = create_annotation_info(ann_id, img_id, cat_id, iscrowd, area, box, segmentation)
             coco_output['annotations'].append(ann_info)
-            ann_id = ann_id + 1
-            
+            ann_id += 1
+
     return coco_output
 
 
